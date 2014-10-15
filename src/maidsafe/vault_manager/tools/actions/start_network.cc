@@ -224,7 +224,18 @@ class PublicPmidStorer {
       catch (const std::exception& e) {
         TLOG(kRed) << "Failed storing public key of Pmid " << DebugId(public_pmid.name())
                    << ": " << boost::diagnostic_information(e) << '\n';
-        ++failures;
+        try {
+          client_nfs_->Put(public_pmid).get();
+          auto pmid_future(client_nfs_->Get(public_pmid.name()));
+          if (!EqualKeys(public_pmid, pmid_future.get()))
+            BOOST_THROW_EXCEPTION(MakeError(AsymmErrors::invalid_public_key));
+          LOG(kInfo) << "Pmid " << DebugId(public_pmid.name()) << " public key stored & verified";
+        }
+        catch (const std::exception& e) {
+          TLOG(kRed) << "Failed again in storing public key of Pmid " << DebugId(public_pmid.name())
+                     << ": " << boost::diagnostic_information(e) << '\n';
+          ++failures;
+        }
       }
     }
     if (failures) {
