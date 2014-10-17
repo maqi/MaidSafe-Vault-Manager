@@ -199,7 +199,7 @@ void ProcessManager::StopAllWithInterval() {
       ++index;
       TLOG(kDefaultColour) << "stopping vault " << index << '\n';
       StopProcess(connection);
-      Sleep(std::chrono::seconds(5));
+      Sleep(std::chrono::seconds(600));
     }
 #ifndef MAIDSAFE_WIN32
     boost::system::error_code ignored_ec;
