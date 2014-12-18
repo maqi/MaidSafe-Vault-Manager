@@ -44,8 +44,6 @@ void ChooseTest::GetChoice() {
 }
 
 void ChooseTest::HandleChoice() {
-  local_network_controller_->current_command =
-      maidsafe::make_unique<ChooseTest>(local_network_controller_);
   // Throwing an error to indicate a quit request
   if (choice_ == 101)
     BOOST_THROW_EXCEPTION(MakeError(VaultManagerErrors::timed_out));
